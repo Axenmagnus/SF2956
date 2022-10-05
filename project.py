@@ -37,8 +37,8 @@ arr = df.sort_values(by="Party", ascending=7) # Ordering by Party
 arr = df.to_numpy() # change from dataframe to array
 
 array_only_votes = arr[0:,3:] # dropping District, Party,Sex
-dend = hierarchy.linkage(array_only_votes, 'single') # Creating a Dendrogram
+dend = hierarchy.linkage(array_only_votes, 'ward') # Creating a Dendrogram
 plt.figure()
 dn = hierarchy.dendrogram(dend)
 plt.show()
-# Future inmplementation: colorgrade every part
+# Future inmplementation: colorgrade every party
