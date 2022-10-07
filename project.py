@@ -33,12 +33,31 @@ print(df)
 
 # print(votespd)
 
-arr = df.sort_values(by="Party", ascending=7) # Ordering by Party
+#arr = df.sort_values(by="Party", ascending=7) # Ordering by Party
 arr = df.to_numpy() # change from dataframe to array
 
+
+
 array_only_votes = arr[0:,3:] # dropping District, Party,Sex
-dend = hierarchy.linkage(array_only_votes, 'ward') # Creating a Dendrogram
+dend = hierarchy.linkage(array_only_votes, 'ward')#,color=np.array(df["Party"].values)) # Creating a Dendrogram
 plt.figure()
-dn = hierarchy.dendrogram(dend)
+
+dn = hierarchy.dendrogram(dend,labels=list(df["Party"].values))
+label_colors = {'0': 'r', '1': 'b', '2': 'g', '3': 'b','4': 'm', '5': 'c', '6': 'w', '7': 'y'}
+ax = plt.gca()
+xlbls = ax.get_xmajorticklabels()
+for lbl in xlbls:
+    lbl.set_color(label_colors[lbl.get_text()])
+
 plt.show()
-# Future inmplementation: colorgrade every party
+
+#for j in range(len()):
+    
+
+dn1 = hierarchy.dendrogram(dend)#,labels=list(df["Party"].values))
+
+indx=dn1["ivl"]
+for j in range(len(dn['leaves_color_list'])):
+    indx=int(dn["ivl"][j])
+    party=(df.iloc[indx]["Party"])
+    dn1['leaves_color_list'][j]="C"+party
