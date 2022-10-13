@@ -1,8 +1,27 @@
 import pandas as pd
 import numpy as np
 
+from ripser import ripser
+from persim import plot_diagrams
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.metrics.pairwise import pairwise_distances
+from scipy import sparse
+import scipy.spatial as spatial
+
+from ripser import ripser
+from persim import plot_diagrams
+import tadasets
+
 from scipy.cluster import hierarchy
 import matplotlib.pyplot as plt
+
+import stablerank.srank as sr
+
+
+
 
 dist = open('PoliticalData/mpdistrict.dat').readlines()
 party = open('PoliticalData/mpparty.dat').readlines()
@@ -42,5 +61,15 @@ array_only_votes = arr[0:,3:] # dropping District, Party,Sex
 dend = hierarchy.linkage(array_only_votes, 'ward') # Creating a Dendrogram
 plt.figure()
 dn = hierarchy.dendrogram(dend, labels=list(df['Gender']))
-plt.show()
+# plt.show()
 # Future inmplementation: colorgrade every party
+
+
+data_dist = [sr.Distance(spatial.distance.pdist(fig, "euclidean")) for fig in arr]
+
+
+diagrams = ripser(arr, thresh=5)['dgms']
+plot_diagrams(diagrams, show=True)
+
+
+
