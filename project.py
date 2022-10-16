@@ -56,8 +56,8 @@ plt.show()
 
 dn1 = hierarchy.dendrogram(dend)#,labels=list(df["Party"].values))
 
-indx=dn1["ivl"]
-for j in range(len(dn['leaves_color_list'])):
-    indx=int(dn["ivl"][j])
-    party=(df.iloc[indx]["Party"])
-    dn1['leaves_color_list'][j]="C"+party
+#indx=dn1["ivl"]
+#for j in range(len(dn['leaves_color_list'])):
+#    indx=int(dn["ivl"][j])
+#    party=(df.iloc[indx]["Party"])
+#    dn1['leaves_color_list'][j]="C"+party
