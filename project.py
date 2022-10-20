@@ -1,3 +1,4 @@
+from matplotlib.pylab import ndarray
 import pandas as pd
 import numpy as np
 
@@ -48,26 +49,55 @@ i = 0
 for vote in votenp:
     df['Vote: ',str(i)] = vote.tolist()
     i = i+1
-print(df)
+# print(df)
 
 # print(votespd)
 
 # arr = df.sort_values(by="Party", ascending=7) # Ordering by Party
 # print(arr)
 arr = df.to_numpy() # change from dataframe to array
-array_only_votes = arr[0:,3:] # dropping District, Party,Sex
+arr = arr.astype(np.float64)
+arrVote = arr[0:,3:] # dropping District, Party,Sex
 
 
-dend = hierarchy.linkage(array_only_votes, 'ward') # Creating a Dendrogram
+dend = hierarchy.linkage(arrVote, 'ward') # Creating a Dendrogram
 plt.figure()
 dn = hierarchy.dendrogram(dend, labels=list(df['Gender']))
 # plt.show()
 # Future inmplementation: colorgrade every party
 
+# Create distance-matrix
+distmat = spatial.distance_matrix(arrVote,arrVote)
+print(distmat)
+print(arrVote[0])
+print(spatial.distance.pdist([arrVote[0],arrVote[1]], "euclidean"))
+# data_dis = [sr.Distance(spatial.distance.pdist(fig, "euclidean")) for fig in distmat]
+data_dist = [sr.Distance(fig) for fig in distmat]
 
-data_dist = [sr.Distance(spatial.distance.pdist(fig, "euclidean")) for fig in arr]
+# Converitng the distance objects into H0 stable ranks
+clustering_methods = ["single", "complete", "average", "ward"]
+data_h0sr = {}
+train_h0sr = {}
+for cm in clustering_methods:
+    print(data_dist[0].get_h0sr(clustering_method=cm))
+    data_h0sr[cm] = [d.get_h0sr(clustering_method=cm) for d in data_dist]
 
 
+# H0 homology
+plt.figure(figsize=(10,7))
+i = 0
+for f in data_h0sr["single"]:
+    if i <100:
+        color = "red"
+    else:
+        color = "blue"
+    f.plot(color=color, linewidth=0.5)
+    i += 1
+
+
+
+
+# Random ripser plot
 diagrams = ripser(arr, thresh=5)['dgms']
 plot_diagrams(diagrams, show=True)
 
