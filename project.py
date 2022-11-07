@@ -2,24 +2,28 @@ from matplotlib.pylab import ndarray
 import pandas as pd
 import numpy as np
 
-from ripser import ripser
-from persim import plot_diagrams
+# from ripser import ripser
+# from persim import plot_diagrams
 
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.metrics.pairwise import pairwise_distances
+from sklearn.metrics.pairwise import manhattan_distances
 from scipy import sparse
 import scipy.spatial as spatial
 
-from ripser import ripser
-from persim import plot_diagrams
-import tadasets
+# from ripser import ripser
+# from persim import plot_diagrams
+# import tadasets
 
 from scipy.cluster import hierarchy
 import matplotlib.pyplot as plt
+# import gudhi
 
-import stablerank.srank as sr
+import random
+
+# import stablerank.srank as sr
 
 
 
@@ -66,13 +70,55 @@ dn = hierarchy.dendrogram(dend, labels=list(df['Gender']))
 # plt.show()
 # Future inmplementation: colorgrade every party
 
-# Create distance-matrix
+# Create distance-matrix (euclidean, manhattan, hamming)
 distmat = spatial.distance_matrix(arrVote,arrVote)
-print(distmat)
-print(arrVote[0])
-print(spatial.distance.pdist([arrVote[0],arrVote[1]], "euclidean"))
+distman = manhattan_distances(arrVote,arrVote)
+print(distman)
+que = (arrVote[:, None, :] != arrVote).sum(2)
+
+
+# Sample from the distance matrix
+samp = random.sample(range(len(distmat)),60)
+distmat_red_Ham = np.zeros((len(samp),len(samp)))
+k = 0
+n = 0
+for i in samp:
+    for j in samp:
+        distmat_red_Ham[k,n] = que[i,j]
+        n = n + 1
+    k = k + 1
+    n = 0
+np.savetxt('distHam', distmat_red_Ham, delimiter=' ')
+
+distmat_red = np.zeros((len(samp),len(samp)))
+k = 0
+n = 0
+for i in samp:
+    for j in samp:
+        distmat_red[k,n] = distman[i,j]
+        n = n + 1
+    k = k + 1
+    n = 0
+np.savetxt('distMan', distmat_red, delimiter=' ')
+
+distmat_red = np.zeros((len(samp),len(samp)))
+k = 0
+n = 0
+for i in samp:
+    for j in samp:
+        distmat_red[k,n] = distmat[i,j]
+        n = n + 1
+    k = k + 1
+    n = 0
+np.savetxt('distEuc', distmat_red, delimiter=' ')
+
+
+
+
+# print(arrVote[0])
+# print(spatial.distance.pdist([arrVote[0],arrVote[1]], "euclidean"))
 # data_dis = [sr.Distance(spatial.distance.pdist(fig, "euclidean")) for fig in distmat]
-data_dist = [sr.Distance(fig) for fig in distmat]
+data_dist = [str.Distance(fig) for fig in distmat]
 
 # Converitng the distance objects into H0 stable ranks
 clustering_methods = ["single", "complete", "average", "ward"]
@@ -97,9 +143,9 @@ for f in data_h0sr["single"]:
 
 
 
-# Random ripser plot
-diagrams = ripser(arr, thresh=5)['dgms']
-plot_diagrams(diagrams, show=True)
+# # Random ripser plot
+# diagrams = ripser(arr, thresh=5)['dgms']
+# plot_diagrams(diagrams, show=True)
 
 
 
